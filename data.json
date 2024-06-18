@@ -1,0 +1,87 @@
+{
+    "header1": ["Топвизор #5", "Competitor 1", "Competitor 2", "Competitor 3", "Competitor 4", "Competitor 5"],
+    "header2": ["6 (86%)", "0 (0%)", "1 (14%)", "Средняя: 6", "Видимость: 58", "1-10 (0%)", "11-30 (0%)", "31-50 (0%)", "51-100 (0%)", "100+ (0%)"],
+    "table": [
+        {
+            "query": "позиция сайта",
+            "frequency": 1142,
+            "visits": 12,
+            "positions": [9, 10, 8, 7, 6, 5, 4, 3, 2, 1]
+        },
+        {
+            "query": "позиция сайта в поисковиках",
+            "frequency": 606,
+            "visits": 8,
+            "positions": [7, 6, 5, 4, 3, 2, 1, 9, 8, 7]
+        },
+        {
+            "query": "проверить позицию сайта",
+            "frequency": 1502,
+            "visits": 28,
+            "positions": [8, 7, 6, 5, 4, 3, 2, 1, 9, 8]
+        },
+        {
+            "query": "проверка позиций сайта",
+            "frequency": 1397,
+            "visits": 43,
+            "positions": [7, 6, 5, 4, 3, 2, 1, 9, 8, 7]
+        },
+        {
+            "query": "проверка позиций сайта в поисковиках",
+            "frequency": 179,
+            "visits": 7,
+            "positions": [6, 5, 4, 3, 2, 1, 9, 8, 7, 6]
+        },
+        {
+            "query": "проверить позиции",
+            "frequency": 99,
+            "visits": 6,
+            "positions": [5, 4, 3, 2, 1, 9, 8, 7, 6, 5]
+        },
+        {
+            "query": "проверить позиции сайта по ключевым запросам",
+            "frequency": 23,
+            "visits": 8,
+            "positions": [7, 6, 5, 4, 3, 2, 1, 9, 8, 7]
+        }
+    ],
+    "visibilityChart": {
+        "labels": ["Competitor 1", "Competitor 2", "Competitor 3", "Competitor 4", "Competitor 5"],
+        "data": [20, 20, 20, 20, 20]
+    },
+    "lineChart": {
+        "labels": ["01.05.2018", "02.05.2018", "03.05.2018", "04.05.2018", "05.05.2018", "06.05.2018", "07.05.2018", "08.05.2018", "09.05.2018", "10.05.2018"],
+        "datasets": [
+            {
+                "label": "Топвизор #5",
+                "data": [10, 12, 15, 14, 13, 16, 18, 19, 17, 20],
+                "borderColor": "rgba(75, 192, 192, 1)",
+                "backgroundColor": "rgba(75, 192, 192, 0.2)"
+            },
+            {
+                "label": "Competitor 1",
+                "data": [8, 9, 10, 11, 10, 12, 14, 13, 12, 15],
+                "borderColor": "rgba(54, 162, 235, 1)",
+                "backgroundColor": "rgba(54, 162, 235, 0.2)"
+            },
+            {
+                "label": "Competitor 2",
+                "data": [6, 7, 8, 9, 8, 10, 11, 10, 9, 12],
+                "borderColor": "rgba(255, 206, 86, 1)",
+                "backgroundColor": "rgba(255, 206, 86, 0.2)"
+            },
+            {
+                "label": "Competitor 3",
+                "data": [5, 6, 7, 8, 7, 9, 10, 9, 8, 11],
+                "borderColor": "rgba(153, 102, 255, 1)",
+                "backgroundColor": "rgba(153, 102, 255, 0.2)"
+            },
+            {
+                "label": "Competitor 4",
+                "data": [4, 5, 6, 7, 6, 8, 9, 8, 7, 10],
+                "borderColor": "rgba(255, 99, 132, 1)",
+                "backgroundColor": "rgba(255, 99, 132, 0.2)"
+            }
+        ]
+    }
+}

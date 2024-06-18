@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 90%;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+        .header div {
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .header div:last-child {
+            margin-right: 0;
+        }
+        .chart-container {
+            display: flex;
+        }
+        .chart, .table {
+            flex: 1;
+            padding: 20px;
+            background-color: #f1f1f1;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        .chart:last-child {
+            margin-right: 0;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f1f1f1;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div id="header1" class="header"></div>
+        <div class="chart-container">
+            <div class="chart">
+                <h2>Видимость</h2>
+                <canvas id="visibilityChart"></canvas>
+            </div>
+            <div class="chart">
+                <h2>Средняя</h2>
+                <canvas id="lineChart"></canvas>
+            </div>
+        </div>
+        <div id="header2" class="header"></div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Запросы</th>
+                        <th>Частота</th>
+                        <th>Визиты</th>
+                        <th>31.05.2018</th>
+                        <th>30.05.2018</th>
+                        <th>29.05.2018</th>
+                        <th>28.05.2018</th>
+                        <th>27.05.2018</th>
+                        <th>26.05.2018</th>
+                        <th>25.05.2018</th>
+                        <th>24.05.2018</th>
+                        <th>23.05.2018</th>
+                        <th>22.05.2018</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('data.json')
+                .then(response => response.json())
+                .then(data => {
+                    // Заполнение header1
+                    const header1Container = document.getElementById('header1');
+                    data.header1.forEach(item => {
+                        const div = document.createElement('div');
+                        div.textContent = item;
+                        header1Container.appendChild(div);
+                    });
+
+                    // Заполнение header2
+                    const header2Container = document.getElementById('header2');
+                    data.header2.forEach(item => {
+                        const div = document.createElement('div');
+                        div.textContent = item;
+                        header2Container.appendChild(div);
+                    });
+
+                    // Заполнение таблицы
+                    const tableBody = document.getElementById('table-body');
+                    data.table.forEach(row => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${row.query}</td>
+                            <td>${row.frequency}</td>
+                            <td>${row.visits}</td>
+                            ${row.positions.map(pos => `<td>${pos}</td>`).join('')}
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+
+                    // Рендеринг графика видимости
+                    const ctx1 = document.getElementById('visibilityChart').getContext('2d');
+                    const visibilityChart = new Chart(ctx1, {
+                        type: 'doughnut',
+                        data: {
+                            labels: data.visibilityChart.labels,
+                            datasets: [{
+                                label: 'Visibility',
+                                data: data.visibilityChart.data,
+                                backgroundColor: [
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed !== null) {
+                                                label += context.parsed + '%';
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Рендеринг линейного графика
+                    const ctx2 = document.getElementById('lineChart').getContext('2d');
+                    const lineChart = new Chart(ctx2, {
+                        type: 'line',
+                        data: {
+                            labels: data.lineChart.labels,
+                            datasets: data.lineChart.datasets.map(dataset => ({
+                                label: dataset.label,
+                                data: dataset.data,
+                                borderColor: dataset.borderColor,
+                                backgroundColor: dataset.backgroundColor,
+                                fill: false,
+                                tension: 0.1
+                            }))
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed.y !== null) {
+                                                label += context.parsed.y;
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Date'
+                                    }
+                                },
+                                y: {
+                                    display: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Position'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error('Error loading data:', error));
+        });
+    </script>
+</body>
+</html>
