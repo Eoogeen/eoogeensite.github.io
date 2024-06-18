@@ -76,21 +76,7 @@
         <div class="table-container">
             <table>
                 <thead>
-                    <tr>
-                        <th>Запросы</th>
-                        <th>Частота</th>
-                        <th>Визиты</th>
-                        <th>31.05.2018</th>
-                        <th>30.05.2018</th>
-                        <th>29.05.2018</th>
-                        <th>28.05.2018</th>
-                        <th>27.05.2018</th>
-                        <th>26.05.2018</th>
-                        <th>25.05.2018</th>
-                        <th>24.05.2018</th>
-                        <th>23.05.2018</th>
-                        <th>22.05.2018</th>
-                    </tr>
+                    <tr id="table-header"></tr>
                 </thead>
                 <tbody id="table-body"></tbody>
             </table>
@@ -117,7 +103,16 @@
                         header2Container.appendChild(div);
                     });
 
-                    // Заполнение таблицы
+                    // Заполнение заголовка таблицы
+                    const tableHeader = document.getElementById('table-header');
+                    const headerCells = ['Запросы', 'Частота', 'Визиты', ...data.dates];
+                    headerCells.forEach(header => {
+                        const th = document.createElement('th');
+                        th.textContent = header;
+                        tableHeader.appendChild(th);
+                    });
+
+                    // Заполнение тела таблицы
                     const tableBody = document.getElementById('table-body');
                     data.table.forEach(row => {
                         const tr = document.createElement('tr');
