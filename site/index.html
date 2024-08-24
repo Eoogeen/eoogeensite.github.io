@@ -27,6 +27,7 @@
             height: 30px;
             vertical-align: middle;
             box-sizing: border-box;
+            position: relative;
         }
         th:last-child, td:last-child {
             border-right: none;
@@ -37,15 +38,6 @@
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
-        }
-        td {
-            overflow: hidden;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 50px;
         }
         .logo img {
             height: 46px;
@@ -96,6 +88,19 @@
             display: block;
             opacity: 1;
         }
+        .edit-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #007BFF;
+            cursor: pointer;
+            display: none;
+        }
+        td:hover .edit-icon {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -126,6 +131,8 @@
     <div id="notification" class="notification">Почта скопирована!</div>
 
     <script>
+        let data = []; // Store data globally
+
         document.addEventListener('DOMContentLoaded', function() {
             fetch('data.json')
                 .then(response => {
@@ -134,7 +141,8 @@
                     }
                     return response.json();
                 })
-                .then(data => {
+                .then(jsonData => {
+                    data = jsonData; // Save data globally
                     populateTable(data);
                 })
                 .catch(error => {
@@ -147,7 +155,7 @@
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = ''; // Clear existing rows
 
-            jsonArray.forEach(item => {
+            jsonArray.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.classList.add('social-media-row');
                 row.innerHTML = `
@@ -162,6 +170,7 @@
                     <td class="social-media-col hidden ${item.youtube === 'none' ? 'disabled' : ''}">${item.youtube !== 'none' ? `<a href="${item.youtube}" target="_blank">${formatURL(item.youtube)}</a>` : '—'}</td>
                     <td>${item.number === 'none' ? '—' : item.number}</td>
                     <td>${item.country === 'none' ? '—' : item.country}</td>
+                    <td><span class="edit-icon" onclick="editCell(event, ${index})">&#9998;</span></td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -205,6 +214,65 @@
 
             const button = document.querySelector('.toggle-btn');
             button.innerText = isHidden ? 'Скрыть соцсети' : 'Показать соцсети';
+        }
+
+        function editCell(event, rowIndex) {
+            const cell = event.target.closest('td');
+            const originalText = cell.textContent.trim();
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = originalText;
+            input.style.width = '100%';
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+
+            input.addEventListener('blur', () => {
+                const newValue = input.value.trim();
+                cell.innerHTML = newValue || '—';
+
+                // Update the data object
+                const column = cell.cellIndex;
+                const row = data[rowIndex];
+                switch (column) {
+                    case 0: row.logo = newValue; break;
+                    case 1: row.site = newValue; break;
+                    case 2: row.email = newValue; break;
+                    case 3: row.linkedin = newValue; break;
+                    case 4: row.facebook = newValue; break;
+                    case 5: row.telegram = newValue; break;
+                    case 6: row.twitter = newValue; break;
+                    case 7: row.instagram = newValue; break;
+                    case 8: row.youtube = newValue; break;
+                    case 9: row.number = newValue; break;
+                    case 10: row.country = newValue; break;
+                }
+
+                // Update the JSON data on the server
+                updateJSONData(data);
+            });
+        }
+
+        function updateJSONData(updatedData) {
+            fetch('update_data.php', { // Update endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log('Data updated successfully:', result);
+            })
+            .catch(error => {
+                console.error('Error updating data:', error);
+            });
         }
     </script>
 </body>
