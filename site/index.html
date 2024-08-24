@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-right: 1px solid #ddd;
+            height: 30px;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        td {
+            overflow: hidden;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+        }
+        .logo img {
+            height: 46px;
+            object-fit: contain;
+            margin: 2px 0;
+        }
+        .toggle-btn {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: block;
+            width: 100%;
+        }
+        .hidden {
+            display: none;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .disabled {
+            color: #aaa;
+            pointer-events: none;
+            cursor: default;
+        }
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1000;
+        }
+        .notification.show {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Social Media Table</h1>
+
+    <button class="toggle-btn" onclick="toggleSocialMedia()">Показать соцсети</button>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>ЛОГО</th>
+                <th>САЙТ</th>
+                <th>EMAIL</th>
+                <th class="social-media-col hidden">LINKEDIN</th>
+                <th class="social-media-col hidden">FACEBOOK</th>
+                <th class="social-media-col hidden">TELEGRAM</th>
+                <th class="social-media-col hidden">TWITTER</th>
+                <th class="social-media-col hidden">INSTAGRAM</th>
+                <th class="social-media-col hidden">YOUTUBE</th>
+                <th>NUMBER</th>
+                <th>СТРАНА</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Data rows will be inserted here -->
+        </tbody>
+    </table>
+
+    <div id="notification" class="notification">Почта скопирована!</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('data.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    populateTable(data);
+                })
+                .catch(error => {
+                    console.error('Error loading data:', error);
+                    alert('Не удалось загрузить данные. Проверьте консоль для подробностей.');
+                });
+        });
+
+        function populateTable(jsonArray) {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            jsonArray.forEach(item => {
+                const row = document.createElement('tr');
+                row.classList.add('social-media-row');
+                row.innerHTML = `
+                    <td class="logo"><img src="${item.logo}" alt="Logo"></td>
+                    <td><a href="${item.site}" target="_blank">${formatURL(item.site)}</a></td>
+                    <td><a href="mailto:${item.email}" onclick="copyToClipboard('${item.email}'); return false;">${item.email}</a></td>
+                    <td class="social-media-col hidden ${item.linkedin === 'none' ? 'disabled' : ''}">${item.linkedin !== 'none' ? `<a href="${item.linkedin}" target="_blank">${formatURL(item.linkedin)}</a>` : '—'}</td>
+                    <td class="social-media-col hidden ${item.facebook === 'none' ? 'disabled' : ''}">${item.facebook !== 'none' ? `<a href="${item.facebook}" target="_blank">${formatURL(item.facebook)}</a>` : '—'}</td>
+                    <td class="social-media-col hidden ${item.telegram === 'none' ? 'disabled' : ''}">${item.telegram !== 'none' ? `<a href="${item.telegram}" target="_blank">${formatURL(item.telegram)}</a>` : '—'}</td>
+                    <td class="social-media-col hidden ${item.twitter === 'none' ? 'disabled' : ''}">${item.twitter !== 'none' ? `<a href="${item.twitter}" target="_blank">${formatURL(item.twitter)}</a>` : '—'}</td>
+                    <td class="social-media-col hidden ${item.instagram === 'none' ? 'disabled' : ''}">${item.instagram !== 'none' ? `<a href="${item.instagram}" target="_blank">${formatURL(item.instagram)}</a>` : '—'}</td>
+                    <td class="social-media-col hidden ${item.youtube === 'none' ? 'disabled' : ''}">${item.youtube !== 'none' ? `<a href="${item.youtube}" target="_blank">${formatURL(item.youtube)}</a>` : '—'}</td>
+                    <td>${item.number === 'none' ? '—' : item.number}</td>
+                    <td>${item.country === 'none' ? '—' : item.country}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function formatURL(url) {
+            if (url === 'none') {
+                return '—';
+            }
+            return url.replace(/^https?:\/\//, '').replace(/^mailto:/, '');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Почта скопирована!');
+            }).catch(err => {
+                console.error('Не удалось скопировать текст.', err);
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleSocialMedia() {
+            const socialMediaCols = document.querySelectorAll('.social-media-col');
+            const isHidden = socialMediaCols[0].classList.contains('hidden');
+
+            socialMediaCols.forEach(col => {
+                if (isHidden) {
+                    col.classList.remove('hidden');
+                } else {
+                    col.classList.add('hidden');
+                }
+            });
+
+            const button = document.querySelector('.toggle-btn');
+            button.innerText = isHidden ? 'Скрыть соцсети' : 'Показать соцсети';
+        }
+    </script>
+</body>
+</html>
