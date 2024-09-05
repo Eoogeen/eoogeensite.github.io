@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Media Table</title>
+    <title>Таблица социальных сетей</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,7 +27,7 @@
             height: 30px;
             vertical-align: middle;
             box-sizing: border-box;
-            position: relative;
+            user-select: none;
         }
         th:last-child, td:last-child {
             border-right: none;
@@ -35,9 +35,19 @@
         th {
             background-color: #f2f2f2;
             font-weight: bold;
+            cursor: pointer;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
+        }
+        td {
+            overflow: hidden;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
         }
         .logo img {
             height: 46px;
@@ -88,74 +98,54 @@
             display: block;
             opacity: 1;
         }
-        .edit-icon {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-            color: #007BFF;
-            cursor: pointer;
-            display: none;
-        }
-        td:hover .edit-icon {
-            display: block;
+        .highlighted {
+            background-color: #d3e5ff;
+            user-select: text;
         }
     </style>
 </head>
 <body>
-    <h1>Social Media Table</h1>
+    <h1>Таблица социальных сетей</h1>
 
+    <!-- Кнопка для отображения/скрытия соцсетей -->
     <button class="toggle-btn" onclick="toggleSocialMedia()">Показать соцсети</button>
     <table id="dataTable">
         <thead>
             <tr>
-                <th>ЛОГО</th>
-                <th>САЙТ</th>
-                <th>EMAIL</th>
-                <th class="social-media-col hidden">LINKEDIN</th>
-                <th class="social-media-col hidden">FACEBOOK</th>
-                <th class="social-media-col hidden">TELEGRAM</th>
-                <th class="social-media-col hidden">TWITTER</th>
-                <th class="social-media-col hidden">INSTAGRAM</th>
-                <th class="social-media-col hidden">YOUTUBE</th>
-                <th>NUMBER</th>
-                <th>СТРАНА</th>
+                <th onclick="highlightColumn(0)">ЛОГО</th>
+                <th onclick="highlightColumn(1)">САЙТ</th>
+                <th onclick="highlightColumn(2)">EMAIL</th>
+                <th onclick="highlightColumn(3)" class="social-media-col hidden">LINKEDIN</th>
+                <th onclick="highlightColumn(4)" class="social-media-col hidden">FACEBOOK</th>
+                <th onclick="highlightColumn(5)" class="social-media-col hidden">TELEGRAM</th>
+                <th onclick="highlightColumn(6)" class="social-media-col hidden">TWITTER</th>
+                <th onclick="highlightColumn(7)" class="social-media-col hidden">INSTAGRAM</th>
+                <th onclick="highlightColumn(8)" class="social-media-col hidden">YOUTUBE</th>
+                <th onclick="highlightColumn(9)">NUMBER</th>
+                <th onclick="highlightColumn(10)">СТРАНА</th>
             </tr>
         </thead>
         <tbody id="tableBody">
-            <!-- Data rows will be inserted here -->
+            <!-- Здесь будут добавляться строки данных -->
         </tbody>
     </table>
 
+    <!-- Уведомление -->
     <div id="notification" class="notification">Почта скопирована!</div>
 
     <script>
-        let data = []; // Store data globally
-
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('data.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(jsonData => {
-                    data = jsonData; // Save data globally
-                    populateTable(data);
-                })
-                .catch(error => {
-                    console.error('Error loading data:', error);
-                    alert('Не удалось загрузить данные. Проверьте консоль для подробностей.');
-                });
+            fetch('path/to/your/data.json') // Замените на путь к вашему JSON-файлу на сервере
+                .then(response => response.json())
+                .then(jsonArray => populateTable(jsonArray))
+                .catch(error => console.error('Ошибка загрузки данных:', error));
         });
 
         function populateTable(jsonArray) {
             const tableBody = document.getElementById('tableBody');
-            tableBody.innerHTML = ''; // Clear existing rows
+            tableBody.innerHTML = ''; // Очищаем существующие строки
 
-            jsonArray.forEach((item, index) => {
+            jsonArray.forEach(item => {
                 const row = document.createElement('tr');
                 row.classList.add('social-media-row');
                 row.innerHTML = `
@@ -170,7 +160,6 @@
                     <td class="social-media-col hidden ${item.youtube === 'none' ? 'disabled' : ''}">${item.youtube !== 'none' ? `<a href="${item.youtube}" target="_blank">${formatURL(item.youtube)}</a>` : '—'}</td>
                     <td>${item.number === 'none' ? '—' : item.number}</td>
                     <td>${item.country === 'none' ? '—' : item.country}</td>
-                    <td><span class="edit-icon" onclick="editCell(event, ${index})">&#9998;</span></td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -183,22 +172,49 @@
             return url.replace(/^https?:\/\//, '').replace(/^mailto:/, '');
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showNotification('Почта скопирована!');
-            }).catch(err => {
-                console.error('Не удалось скопировать текст.', err);
+        function highlightColumn(columnIndex) {
+            const table = document.getElementById('dataTable');
+            const rows = table.querySelectorAll('tr');
+
+            // Убираем выделение со всех колонок
+            rows.forEach(row => {
+                row.querySelectorAll('td, th').forEach(cell => {
+                    cell.classList.remove('highlighted');
+                });
+            });
+
+            // Добавляем выделение для выбранной колонки
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td, th');
+                if (cells[columnIndex]) {
+                    cells[columnIndex].classList.add('highlighted');
+                }
             });
         }
 
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+        function removeHighlights() {
+            const table = document.getElementById('dataTable');
+            const rows = table.querySelectorAll('tr');
+            rows.forEach(row => {
+                row.querySelectorAll('td, th').forEach(cell => {
+                    cell.classList.remove('highlighted');
+                });
+            });
         }
+
+        // Снятие выделения при нажатии клавиши Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                removeHighlights();
+            }
+        });
+
+        // Снятие выделения при клике вне таблицы
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('#dataTable')) {
+                removeHighlights();
+            }
+        });
 
         function toggleSocialMedia() {
             const socialMediaCols = document.querySelectorAll('.social-media-col');
@@ -216,63 +232,12 @@
             button.innerText = isHidden ? 'Скрыть соцсети' : 'Показать соцсети';
         }
 
-        function editCell(event, rowIndex) {
-            const cell = event.target.closest('td');
-            const originalText = cell.textContent.trim();
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = originalText;
-            input.style.width = '100%';
-            cell.innerHTML = '';
-            cell.appendChild(input);
-            input.focus();
-
-            input.addEventListener('blur', () => {
-                const newValue = input.value.trim();
-                cell.innerHTML = newValue || '—';
-
-                // Update the data object
-                const column = cell.cellIndex;
-                const row = data[rowIndex];
-                switch (column) {
-                    case 0: row.logo = newValue; break;
-                    case 1: row.site = newValue; break;
-                    case 2: row.email = newValue; break;
-                    case 3: row.linkedin = newValue; break;
-                    case 4: row.facebook = newValue; break;
-                    case 5: row.telegram = newValue; break;
-                    case 6: row.twitter = newValue; break;
-                    case 7: row.instagram = newValue; break;
-                    case 8: row.youtube = newValue; break;
-                    case 9: row.number = newValue; break;
-                    case 10: row.country = newValue; break;
-                }
-
-                // Update the JSON data on the server
-                updateJSONData(data);
-            });
-        }
-
-        function updateJSONData(updatedData) {
-            fetch('update_data.php', { // Update endpoint
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedData),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(result => {
-                console.log('Data updated successfully:', result);
-            })
-            .catch(error => {
-                console.error('Error updating data:', error);
-            });
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const notification = document.getElementById('notification');
+                notification.classList.add('show');
+                setTimeout(() => notification.classList.remove('show'), 2000);
+            }).catch(err => console.error('Ошибка при копировании в буфер обмена:', err));
         }
     </script>
 </body>
