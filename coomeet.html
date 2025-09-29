@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Кабинет стримера | L`mour Agency Dashboard</title>
+
+    <!-- базовые мета-теги -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Google Font: Poppins для современного стиля -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Скрипты Coomeet -->
+    <script>
+        var _coomeet = [];
+        _coomeet['PartnerId'] = 15741796527460;
+    </script>
+    <script>
+        (function() {
+            var coomeet = document.createElement('script');
+            coomeet.type = 'text/javascript';
+            coomeet.async = true;
+            coomeet.src = 'https://iframe.coomeet.me/js/code.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(coomeet, s);
+        })();
+    </script>
+
+    <style>
+        /* --- ЦВЕТОВАЯ ПАЛИТРА И ГЛОБАЛЬНЫЕ СТИЛИ --- */
+        :root {
+            /* Фирменные цвета PION */
+            --color-pink-dark: #741b47; 
+            --color-pink-accent: #f95d8c; 
+            --color-pink-light: #fdd6e1; 
+            
+            /* Цвета текста/фона */
+            --color-text-body: #ffffff; 
+            --color-text-info: #1f2937; 
+            --color-background-info: #ffffff; 
+            
+            /* Градиенты */
+            --gradient-body: linear-gradient(180deg, #0e4263 0, #041d2d 100%);
+            --gradient-header: linear-gradient(90deg, var(--color-pink-dark) 0%, var(--color-pink-accent) 100%);
+            
+            /* Тени */
+            --shadow-card: 0 8px 15px rgba(0, 0, 0, 0.4); 
+            --shadow-lift: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-body);
+            color: var(--color-text-body); 
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        button, input, select {
+            font-family: inherit;
+        }
+
+        a {
+            color: var(--color-pink-accent);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: var(--color-pink-light);
+        }
+
+        /* --- ШАПКА (HEADER) --- */
+        header {
+            background: var(--gradient-header);
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text-light); 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-text span {
+            font-weight: 600;
+            color: var(--color-pink-light);
+        }
+        header nav a {
+             color: var(--color-text-light);
+             opacity: 0.9;
+             font-size: 1.2em;
+        }
+        header nav a:hover {
+            color: var(--color-pink-light);
+            opacity: 1;
+        }
+
+        .wrapper {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- IFRAME (РАБОЧАЯ ЗОНА) --- */
+        #coomeet_container {
+            border-radius: 16px;
+            height: 75vh;
+            min-height: 600px;
+            overflow: hidden;
+            border: 6px solid var(--color-pink-dark); 
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6); 
+            background: linear-gradient(180deg, #0e4263 0, #041d2d 100%);
+        }
+        #coomeet_container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block; 
+        }
+
+        /* --- НАВИГАЦИЯ (TABS) --- */
+        .tabs {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+        }
+        .tab-list {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center;
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+            width: 100%;
+            max-width: 800px;
+        }
+        .tab-list li {
+            margin: 0 5px 10px 5px; 
+        }
+        .tab-button {
+            border: 2px solid var(--color-pink-dark);
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-pink-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 30px; 
+            background: var(--color-background-info);
+        }
+        .tab-button:hover {
+            color: var(--color-text-light);
+            background: var(--color-pink-accent);
+            border-color: var(--color-pink-accent);
+            box-shadow: var(--shadow-lift);
+        }
+        .tab-button.active {
+            color: var(--color-text-light);
+            background: var(--color-pink-dark);
+            border-color: var(--color-pink-dark);
+            box-shadow: var(--shadow-lift);
+            transform: translateY(-2px);
+        }
+        .tab-button.active:hover {
+            background: var(--color-pink-accent);
+            border-color: var(--color-pink-accent);
+        }
+        
+        .tab-content {
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        /* --- СТИЛИ КОНТЕНТА ВНУТРИ ВКЛАДОК (СВЕТЛЫЕ БЛОКИ) --- */
+        .info-section {
+            background: var(--color-background-info);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: var(--color-text-info); 
+            line-height: 1.6;
+        }
+        
+        .info-section h3 {
+            color: var(--color-pink-dark);
+            font-size: 22px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--color-pink-light);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-subtitle {
+            color: #6b7280 !important; 
+        }
+
+        /* Списки и правила */
+        .rule-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .rule-list li {
+            margin-bottom: 15px;
+            padding-left: 1.5em;
+            position: relative;
+            color: var(--color-text-info); /* Темный текст */
+            font-size: 15px;
+        }
+        .rule-list li::before {
+            content: '\f058'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--color-pink-accent);
+            display: inline-block;
+            width: 1em;
+            margin-left: -1.5em;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        /* Аккордеоны */
+        .accordion-item {
+            border: 1px solid var(--color-pink-light);
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: var(--color-background-info);
+        }
+        .accordion-header {
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--color-pink-dark);
+            cursor: pointer; /* Важно для работы */
+        }
+        .accordion-header span {
+            min-width: 20px; 
+            text-align: right;
+            font-size: 16px;
+        }
+        .accordion-content {
+            padding: 15px 20px;
+            background: #fdf6f7; 
+            border-top: 1px solid var(--color-pink-light);
+            color: #555;
+            font-size: 14px;
+        }
+        
+        /* Правила: специальные стили */
+        .rules-content ol.rule-list {
+            list-style-type: decimal;
+            margin-left: 20px;
+        }
+
+        /* --- ФУТЕР (FOOTER) --- */
+        footer {
+            margin-top: 60px;
+            padding: 30px 20px;
+            text-align: center;
+            background: var(--color-pink-dark);
+            color: var(--color-text-light);
+            font-size: 14px;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+        }
+        footer a {
+            color: var(--color-pink-accent);
+            font-weight: 600;
+        }
+
+        /* Медиазапросы для адаптивности */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 24px;
+            }
+            .tab-list li {
+                width: 100%;
+            }
+            .tab-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-text">L`mour Agency | <span>Dashboard</span></div>
+        <nav>
+            <a href="#" style="margin-right: 20px;" title="Баланс"><i class="fa-solid fa-wallet"></i></a>
+            <a href="#" title="Уведомления"><i class="fa-solid fa-bell"></i></a>
+        </nav>
+    </header>
+
+    <div class="wrapper">
+        
+        <!-- Заголовок "Рабочая зона Coomeet" удален, как запрошено -->
+
+        <div id="coomeet_container">
+            <iframe
+                src="https://woman.coomeet.com?id=15741796527460&locale=ru&v=1.0"
+                allow="camera *; microphone *; autoplay; clipboard-read; clipboard-write; identity-credentials-get; screen-wake-lock"
+                loading="lazy">
+            </iframe>
+        </div>
+
+        <!-- НАВИГАЦИЯ ПО РАЗДЕЛАМ (С ТАБАМИ) -->
+        <div class="tabs">
+            <ul class="tab-list">
+                <li><button class="tab-button active" data-tab="basics">Основы</button></li>
+                <li><button class="tab-button" data-tab="tips">Советы</button></li>
+                <li><button class="tab-button" data-tab="payouts">Выплаты</button></li>
+                <li><button class="tab-button" data-tab="rules">Правила</button></li>
+            </ul>
+
+            <div id="tab-content-container" class="tab-content">
+                <!-- Контент загружается сюда через JavaScript -->
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2024 Dashboard. Все права защищены. 
+        <div class="footer-links">
+            <a href="#">Политика конфиденциальности</a> |
+            <a href="#">Условия использования</a> |
+            <a href="mailto:pion.vs@gmail.com">Связь с поддержкой</a>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA (Минимальные заглушки, как запрошено) ---
+        const sectionsData = {
+            basics: {
+                title: "Основы успеха",
+                subtitle: "Основные моменты для успешного старта.",
+                content: [
+                    {
+                        title: "Настрой и улыбка",
+                        text: "Всегда встречайте собеседника с позитивом и улыбкой. Живите в кадре, больше двигайтесь."
+                    },
+                    {
+                        title: "Уважение к собеседнику",
+                        text: "Общайтесь с каждым как с единственным. Покажите искренний интерес."
+                    },
+                    {
+                        title: "Концентрация",
+                        text: "Проявляйте максимальную концентрацию и инициативу. Задавайте вопросы."
+                    },
+                    {
+                        title: "Эффективность времени",
+                        text: "Не отвлекайтесь на телефон или сторонний контент. Каждая минута — доход."
+                    }
+                ]
+            },
+            tips: {
+                title: "Эффективные советы",
+                subtitle: "Советы для увеличения вашего дохода.",
+                content: [
+                    {
+                        title: "График работы",
+                        text: "Подумайте о шестидневном графике или увеличьте смену до 9 часов. Доход прямо пропорционален времени."
+                    },
+                    {
+                        title: "Запись историй",
+                        text: "Записывайте истории часто (каждые полчаса/час) для привлечения премиум пользователей."
+                    },
+                    {
+                        title: "Краткость сообщений",
+                        text: "Отправляйте несколько коротких сообщений вместо одного длинного, чтобы не потерять внимание собеседника."
+                    },
+                    {
+                        title: "Добавление в друзья",
+                        text: "Добавляйтесь в друзья ко всем, с кем состоялся контакт. Это потенциальные дополнительные баллы."
+                    }
+                ]
+            },
+            payouts: {
+                title: "Порядок выплат",
+                content: `
+                    <div class="info-section">
+                        <h3>Порядок выплат</h3>
+                        <ul class="rule-list">
+                            <li><i class="fa-solid fa-circle-check" style="color: var(--color-pink-accent); margin-right: 10px;"></i>Минимум для вывода: <strong>5000</strong> баллов.</li>
+                            <li><i class="fa-solid fa-circle-check" style="color: var(--color-pink-accent); margin-right: 10px;"></i>Вывод средств занимает от 24 часов до 5 дней.</li>
+                            <li><i class="fa-solid fa-circle-check" style="color: var(--color-pink-accent); margin-right: 10px;"></i>Вывод осуществляется полной суммой, частичный вывод невозможен.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            rules: {
+                title: "Правила видео-чата",
+                subtitle: "Нарушение ведет к блокировке аккаунта.",
+                content: `
+                    <div class="info-section rules-content">
+                        <h3 style="color: #ff0000;">Важно: Правила сайта</h3>
+                        <p style="font-weight: 600; color: var(--color-pink-dark);">
+                            При поиске собеседника и при "верификации жестом" лицо должно быть полностью в кадре.
+                        </p>
+                        <p style="font-weight: 700; color: #ff0000; margin-top: 15px;">
+                            СТРОГО ЗАПРЕЩАЕТСЯ:
+                        </p>
+                        <ol class="rule-list" style="list-style-type: decimal; color: #444;">
+                            <li>Допускать посторонних или их тени в кадр.</li>
+                            <li>Выманивать подарки обманным путем.</li>
+                            <li>Разглашать конфиденциальную информацию (имена, контакты, темы бесед).</li>
+                            <li>Вести съемку общения или транслировать фото/видео контент (кроме специальных приватных случаев).</li>
+                            <li>Общаться с несовершеннолетними или указывать несовершеннолетний возраст.</li>
+                            <li>Демонстрировать ненормативную лексику или дискриминационные высказывания.</li>
+                        </ol>
+                        <p style="font-size: 14px; margin-top: 20px; color: #6b7280;">
+                            *Правила по обнажению (15-18 пункты) не применяются в приватных чатах с друзьями.
+                        </p>
+                    </div>
+                `
+            }
+        };
+
+
+        // --- JAVASCRIPT ДЛЯ ЛОГИКИ ВКЛАДОК И АККОРДЕОНОВ ---
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const contentContainer = document.getElementById('tab-content-container');
+
+        function renderAccordion(data) {
+            let html = `
+                <div class="info-section">
+                    <p class="dashboard-subtitle" style="text-align: center; color: var(--color-pink-dark); margin-bottom: 20px; font-style: italic; font-weight: 400;">
+                        ${data.subtitle || data.title}
+                    </p>
+                `;
+            
+            data.content.forEach(item => {
+                html += `
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            ${item.title}
+                            <span><i class="fa-solid fa-chevron-down"></i></span>
+                        </div>
+                        <div class="accordion-content" style="display: none;">
+                            <p>${item.text}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            contentContainer.innerHTML = html;
+
+            const headers = contentContainer.querySelectorAll('.accordion-header');
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('span i');
+
+                    // Закрываем все, кроме текущего
+                    contentContainer.querySelectorAll('.accordion-content').forEach(c => {
+                        if (c !== content && c.style.display === 'block') {
+                            c.style.display = 'none';
+                            c.previousElementSibling.querySelector('span i').classList.replace('fa-chevron-up', 'fa-chevron-down');
+                        }
+                    });
+
+                    // Открываем/закрываем текущий
+                    if (content.style.display === 'block') {
+                        content.style.display = 'none';
+                        icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    } else {
+                        content.style.display = 'block';
+                        icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                    }
+                });
+            });
+        }
+
+        function renderContent(tabName) {
+            const data = sectionsData[tabName];
+            contentContainer.innerHTML = '';
+            
+            if (data.content && typeof data.content === 'string') {
+                contentContainer.innerHTML = data.content;
+            } else if (data.content && Array.isArray(data.content)) {
+                renderAccordion(data);
+            }
+        }
+
+        function handleTabClick(event) {
+            const clickedButton = event.target.closest('.tab-button');
+            if (!clickedButton) return;
+            
+            const tabName = clickedButton.dataset.tab;
+
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            clickedButton.classList.add('active');
+
+            renderContent(tabName);
+        }
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', handleTabClick);
+        });
+
+        window.addEventListener('load', () => {
+            renderAccordion(sectionsData.basics);
+        });
+    </script>
+</body>
+</html>
